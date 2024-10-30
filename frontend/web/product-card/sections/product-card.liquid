@@ -36,6 +36,7 @@
     <div class="product-card-section">
       
   {% for block in section.blocks %}
+     {% assign badgeTitle = '' %}
     {% if block.type == 'product' %}
       {% assign product = all_products[block.settings.selected_product] %}
       {% if product.tags contains 'New' or product.tags contains 'new' %}
@@ -51,6 +52,7 @@
           Badge-Title="{{ badgeTitle }}"
           product-title="{{ product.title }}" 
           product-link="{{ product.url }}" 
+          product-descount ="{{ product.compare_at_price | money }}"
           product-image="{{ product.featured_image | img_url: 'master' }}" 
           product-price="{{ product.price | money }}">
         </product-card>

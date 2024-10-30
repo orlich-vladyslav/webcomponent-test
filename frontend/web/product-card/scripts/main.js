@@ -13,7 +13,9 @@ class ProductCard extends HTMLElement {
       const productTitle = this.getAttribute('product-title');
       const productImage = this.getAttribute('product-image');
       const productPrice = this.getAttribute('product-price');
+      const productDiscount = this.getAttribute('product-descount');
       const productUrl = this.getAttribute('product-link');
+      const productBadge = this.getAttribute('Badge-Title');
   
       this.shadowRoot.innerHTML = `
         <style>
@@ -57,15 +59,34 @@ class ProductCard extends HTMLElement {
             margin: 8px 0;
           }
           .product-price {
-            font-size: 1em;
-            color:var(--card-price_color);
+            gap: 10px;
+    display: flex;
+    font-size: 1em;
+    color: var(--card-price_color);
+    justify-content: center;
+    align-items: center;
+          }
+          .custom_card_badge:not(:empty){
+         position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px 15px;
+    font-size: 13px;
+    line-height: 1;
+    border-radius: 6px;
+    z-index: 9;
+    margin: 10px;
+    color: #fff;
+          background-color:var(--card-title_color);
           }
         </style>
         <div class="product-card">
           <div class="product-card-inner">
            <a href="${productUrl}">
             <div class="product-card-thumbnail-wrapper">
+             <span class="custom_card_badge">${productBadge}</span>
               <img class="product-image" src="${productImage}" alt="${productTitle}">
+             
             </div>
             <div class="product-card-content-wrapper">
               <div class="product-title">
@@ -73,7 +94,7 @@ class ProductCard extends HTMLElement {
                   <h3>${productTitle}</h3>
                 </a>
               </div>
-              <div class="product-price">${productPrice}</div>
+              <div class="product-price"><s>${productDiscount}</s>${productPrice}</div>
             </div></a>
           </div>
         </div>

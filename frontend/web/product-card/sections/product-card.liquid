@@ -38,9 +38,17 @@
   {% for block in section.blocks %}
     {% if block.type == 'product' %}
       {% assign product = all_products[block.settings.selected_product] %}
+      {% if product.tags contains 'New' or product.tags contains 'new' %}
+        {% assign badgeTitle = 'NEW' %}
+        {% elsif product.price_varies %}
+         {% assign badgeTitle = 'SALE' %}
+        {% elsif product.variants.first.inventory_quantity <= 0 %}
+         {% assign badgeTitle = 'SOLD OUT' %}
+        {% endif %}
       {% if product %}
         <product-card 
           product-id="{{ product.id }}" 
+          Badge-Title="{{ badgeTitle }}"
           product-title="{{ product.title }}" 
           product-link="{{ product.url }}" 
           product-image="{{ product.featured_image | img_url: 'master' }}" 

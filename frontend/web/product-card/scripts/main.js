@@ -22,7 +22,6 @@ class ProductCard extends HTMLElement {
             border-radius: 8px;
             padding: 16px;
             text-align: center;
-            margin: 16px;
             transition: transform 0.2s;
           }
           .product-card:hover {
@@ -32,7 +31,12 @@ class ProductCard extends HTMLElement {
             display: flex;
             flex-direction: column;
             height: 100%;
+
           }
+            .product-card a{
+            text-decoration:none;
+
+            }
           .product-card-thumbnail-wrapper {
             position: relative;
             width: 100%;
@@ -47,6 +51,7 @@ class ProductCard extends HTMLElement {
             height: 100%;
             object-fit: cover;
           }
+          
           .product-title {
             font-size: 1.2em;
             margin: 8px 0;
@@ -58,6 +63,7 @@ class ProductCard extends HTMLElement {
         </style>
         <div class="product-card">
           <div class="product-card-inner">
+           <a href="${productUrl}">
             <div class="product-card-thumbnail-wrapper">
               <img class="product-image" src="${productImage}" alt="${productTitle}">
             </div>
@@ -68,7 +74,7 @@ class ProductCard extends HTMLElement {
                 </a>
               </div>
               <div class="product-price">${productPrice}</div>
-            </div>
+            </div></a>
           </div>
         </div>
       `;

@@ -10,6 +10,11 @@
          padding-block: {{ section.settings.padding_top | append:'px' | default:0 }} {{ section.settings.padding_bottom |  append:'px' | default:0}};
        }
      }
+  :root{
+   --card-title_color : {{section.settings.card_title_color}};
+   --card-rounded : {{section.settings.card_rounded | append:'px'}};
+    
+  }
 {%- endstyle -%}
 <section
   class="section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}  {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
@@ -19,7 +24,13 @@
   {% endif %}
 >
   <div class="{{ section.settings.sec_size }}" id="{{ section.id }}">
+     {%- if section.settings.sec_title != blank -%}
+        <h2 class="title text-{{ section.settings.title_alignment }} inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          {{ section.settings.sec_title }}
+        </h2>
+      {%- endif -%}
     <div class="product-card-section">
+      
   {% for block in section.blocks %}
     {% if block.type == 'product' %}
       {% assign product = all_products[block.settings.selected_product] %}
@@ -42,6 +53,17 @@
 {
   "name": "Product Card Section",
   "settings": [
+     {
+      "type": "text",
+      "id": "sec_title",
+      "label": "Section Title"
+    },
+   
+     {
+      "type": "text_alignment",
+      "id": "title_alignment",
+      "label": "Section Title Alignment"
+    },
        {
       "type": "select",
       "id": "sec_size",
@@ -88,6 +110,25 @@
       "step": 1,
       "label": "Desktop Items",
       "default": 1
+    },
+      {
+      "type": "header",
+      "content": "Card Setting"
+    },
+      {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Card Title Color"
+    },
+     {
+      "type": "range",
+      "id": "card_rounded",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Card Rounded",
+      "default": 10
     },
       {
       "type": "header",

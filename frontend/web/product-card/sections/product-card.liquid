@@ -1,0 +1,162 @@
+{%- style -%}
+        .section-{{ section.id }}-padding {
+       padding-block: {{ section.settings.padding_top | times: 0.75 | round: 0 | append:'px' }} {{ section.settings.padding_bottom | times: 0.75 | round: 0 | append:'px' }};
+           }
+   @media screen and (max-width: 600px) {
+      padding-block: {{ section.settings.padding_top_mob | append:'px' | default:0 }}  {{ section.settings.padding_bottom_mob | append:'px' | default:0 }};
+       }}
+     @media screen and (min-width: 1100px) {
+       .section-{{ section.id }}-padding {
+         padding-block: {{ section.settings.padding_top | append:'px' | default:0 }} {{ section.settings.padding_bottom |  append:'px' | default:0}};
+       }
+     }
+{%- endstyle -%}
+<section
+  class="section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}  {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+  id="section--{{ section.id }}"
+  {% if settings.animations_reveal_on_scroll %}
+    data-cascade
+  {% endif %}
+>
+  <div class="{{ section.settings.sec_size }}" id="{{ section.id }}">
+    <div class="product-card-section">
+  {% for block in section.blocks %}
+    {% if block.type == 'product' %}
+      {% assign product = all_products[block.settings.selected_product] %}
+      {% if product %}
+        <product-card 
+          product-id="{{ product.id }}" 
+          product-title="{{ product.title }}" 
+          product-title="{{ product.url }}" 
+          product-image="{{ product.featured_image | img_url: 'master' }}" 
+          product-price="{{ product.price | money }}">
+        </product-card>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Card Section",
+  "settings": [
+       {
+      "type": "select",
+      "id": "sec_size",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Container-fluid"
+        },
+        {
+          "value": "page-width",
+          "label": "Page-width"
+        }
+      ],
+      "default": "container",
+      "label": "Section Size"
+    },
+     {
+      "type": "range",
+      "id": "desktop_items",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "label": "Desktop Items",
+      "default": 4
+    },
+     {
+      "type": "range",
+      "id": "tabs_items",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "label": "Tablets Items",
+      "default": 3
+    },
+     {
+      "type": "range",
+      "id": "mobile_items",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "label": "Desktop Items",
+      "default": 1
+    },
+      {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 50
+    },
+       {
+      "type": "header",
+      "content": "Section Padding Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mob",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top Mobile",
+      "default": 50
+    },
+
+    {
+      "type": "range",
+      "id": "padding_bottom_mob",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom Mobile",
+      "default": 50
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "selected_product",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Card Section",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

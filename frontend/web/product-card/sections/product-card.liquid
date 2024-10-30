@@ -1,3 +1,4 @@
+
 {%- style -%}
         .section-{{ section.id }}-padding {
        padding-block: {{ section.settings.padding_top | times: 0.75 | round: 0 | append:'px' }} {{ section.settings.padding_bottom | times: 0.75 | round: 0 | append:'px' }};
@@ -13,6 +14,9 @@
   :root{
    --card-title_color : {{section.settings.card_title_color}};
    --card-rounded : {{section.settings.card_rounded | append:'px'}};
+   --ftgrid_desktopIems : {{section.settings.desktop_items}};
+   --ftgrid_tabIems : {{section.settings.tabs_items}};
+   --ftgrid_mobileIems : {{section.settings.mobile_items}};
     
   }
 {%- endstyle -%}

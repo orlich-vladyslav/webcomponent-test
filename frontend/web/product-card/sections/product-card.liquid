@@ -1,4 +1,3 @@
-
 {%- style -%}
         .section-{{ section.id }}-padding {
        padding-block: {{ section.settings.padding_top | times: 0.75 | round: 0 | append:'px' }} {{ section.settings.padding_bottom | times: 0.75 | round: 0 | append:'px' }};
@@ -13,6 +12,7 @@
      }
   :root{
    --card-title_color : {{section.settings.card_title_color}};
+   --card-price_color : {{section.settings.card_price_color}};
    --card-rounded : {{section.settings.card_rounded | append:'px'}};
    --ftgrid_desktopIems : {{section.settings.desktop_items}};
    --ftgrid_tabIems : {{section.settings.tabs_items}};
@@ -42,7 +42,7 @@
         <product-card 
           product-id="{{ product.id }}" 
           product-title="{{ product.title }}" 
-          product-title="{{ product.url }}" 
+          product-link="{{ product.url }}" 
           product-image="{{ product.featured_image | img_url: 'master' }}" 
           product-price="{{ product.price | money }}">
         </product-card>
@@ -123,6 +123,11 @@
       "type": "color",
       "id": "card_title_color",
       "label": "Card Title Color"
+    },
+      {
+      "type": "color",
+      "id": "card_price_color",
+      "label": "Card Price Color"
     },
      {
       "type": "range",

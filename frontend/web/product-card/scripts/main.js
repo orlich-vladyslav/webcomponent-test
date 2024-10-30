@@ -19,13 +19,13 @@ class ProductCard extends HTMLElement {
         <style>
           .product-card {
             border: 1px solid #e1e1e1;
-            border-radius: 8px;
+            border-radius:var(--card-rounded);
             padding: 16px;
             text-align: center;
             transition: transform 0.2s;
           }
           .product-card:hover {
-            transform: scale(1.05);
+            transform: scale(1.01);
           }
           .product-card-inner {
             display: flex;
@@ -35,7 +35,7 @@ class ProductCard extends HTMLElement {
           }
             .product-card a{
             text-decoration:none;
-
+            color:var(--card-title_color);
             }
           .product-card-thumbnail-wrapper {
             position: relative;
@@ -58,7 +58,7 @@ class ProductCard extends HTMLElement {
           }
           .product-price {
             font-size: 1em;
-            color: #333;
+            color:var(--card-price_color);
           }
         </style>
         <div class="product-card">

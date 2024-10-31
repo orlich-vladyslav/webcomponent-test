@@ -1,29 +1,11 @@
-import shopify from "vite-plugin-shopify";
-import globs from "rollup-plugin-globlin";
-import cleanup from '@by-association-only/vite-plugin-shopify-clean'
+import { defineConfig } from 'vite'
+import shopify from 'vite-plugin-shopify'
 
-export default {
-  esbuild: {
-    drop: ["console", "debugger"],
-  },
-  build: {
-    emptyOutDir: false,
-  },
-  css: {
-    devSourcemap: true,
-  },
+export default defineConfig({
   plugins: [
-    cleanup(),
-    shopify({ versionNumbers: true }),
-    globs.default({
-      globs: ["frontend/web/**/sections/*.liquid"],
-      dest: "sections",
-      clean: false,
-    }),
-    globs.default({
-      globs: ["frontend/web/**/snippets/*.liquid"],
-      dest: "snippets",
-      clean: false,
-    }),
+    shopify()
   ],
-};
+  build: {
+    emptyOutDir: false
+  }
+})

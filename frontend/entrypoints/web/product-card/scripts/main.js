@@ -81,7 +81,7 @@ class ProductCard extends HTMLElement {
           background-color:var(--card-title_color);
           }
         </style>
-        <div class="product-card" data-cardId="${productId}">
+        <div class="product-card transition" data-cardId="${productId}">
           <div class="product-card-inner">
            <a href="${productUrl}">
             <div class="product-card-thumbnail-wrapper">

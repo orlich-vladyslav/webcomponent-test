@@ -30,7 +30,7 @@
 >
   <div class="{{ section.settings.sec_size }}" id="{{ section.id }}">
      {%- if section.settings.sec_title != blank -%}
-        <h2 class="title text-{{ section.settings.title_alignment }} inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        <h2 class="title reveal text-{{ section.settings.title_alignment }} inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
           {{ section.settings.sec_title }}
         </h2>
       {%- endif -%}

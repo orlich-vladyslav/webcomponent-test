@@ -1,2 +1,2 @@
 import 'vite/modulepreload-polyfill'
-import './product-card/scripts/main'
+import '../entrypoints/web/product-card/scripts/main'

@@ -1,0 +1,160 @@
+{%- assign product = section.settings.product -%}
+{%- render 'generic-section-padding' -%}
+
+{% comment %}
+  TODO: Find a way to simplify this, or maybe use a normal badge for it so we can take advantage
+  of .color-{{ section.settings.badge_color_scheme }} class
+{% endcomment %}
+{%- for scheme in settings.color_schemes -%}
+  {%- assign scheme_id = scheme.id | strip -%}
+  {%- assign badge_color_scheme = section.settings.badge_color_scheme | strip -%}
+  {%- if scheme_id == badge_color_scheme -%}
+    {%- assign badge_text_color = scheme.settings.text | color_to_hex -%}
+    {%- assign badge_bg_color = scheme.settings.background | color_to_hex -%}
+  {%- endif -%}
+
+  {%- assign cta_color_scheme = section.settings.cta_color_scheme | strip -%}
+  {%- if scheme_id == cta_color_scheme -%}
+    {%- assign cta_text_color = scheme.settings.text | color_to_hex -%}
+    {%- assign cta_bg_color = scheme.settings.background | color_to_hex -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- liquid
+  assign featured_image_url = ''
+  assign featured_image_alt = ''
+
+  if product.featured_image
+    assign image = product.featured_image
+    comment
+      500px fallback but sourceset should do the heavylifting for us already.
+    endcomment
+    assign featured_image_url = image | image_url: width: 500
+    assign featured_image_alt = image.alt | escape
+  endif
+-%}
+
+{% comment %}
+  Since I made it so that it only displays mobile and tablet/desktop, we only care about two sizes
+{% endcomment %}
+{%- assign featured_image_sizes = '(max-width: 599px) 100vw, (min-width: 600px) 50vw' -%}
+{%- capture featured_image_source_set -%}
+  {%- render 'image-source-set', image: product.featured_image, widths: '330,535,750,1000,1500' -%}
+{%- endcapture -%}
+
+{% comment %} Ideally data-on-error-message value should be on locales, hard-code for now. {% endcomment %}
+<div class="product-card-container">
+  <product-card
+    data-product-title="{{ product.title }}"
+    data-product-content="{{ section.settings.custom_product_content | default: product.content }}"
+    data-product-price="{{ product.selected_or_first_available_variant.price | money }}"
+    data-default-product-image="{{ featured_image_url }}"
+    data-default-product-image-alt="{{ featured_image_alt }}"
+    data-product-image-source-set="{{ featured_image_source_set }}"
+    data-product-image-sizes="{{ featured_image_sizes }}"
+    data-cta-product-variant-id="{{ product.selected_or_first_available_variant.id }}"
+    data-cta-product-variant-in-stock="{{ product.selected_or_first_available_variant.available }}"
+    data-cta-text="{{ section.settings.cta_text }}"
+    data-cta-text-color="{{ cta_text_color }}"
+    data-cta-bg-color="{{ cta_bg_color }}"
+    data-badge-text="{{ section.settings.badge_text }}"
+    data-badge-text-color="{{ badge_text_color }}"
+    data-badge-bg-color="{{ badge_bg_color }}"
+    data-image-orientation="{{ section.settings.orientation }}"
+  >
+  </product-card>
+</div>
+
+{%- comment -%}
+  TODO: Move to locales later.
+  Maybe let's think of a way where we can have locales inside frontend/web/{component}/locales
+  just like how Shawn does on on scripts. For now, hard-code this as this is not the focus
+  of the test.
+{%- endcomment -%}
+{%- schema -%}
+{
+  "name": "Product Card",
+  "tag": "section",
+  "class": "section section-product-card",
+  "settings": [
+    {
+      "id": "product",
+      "type": "product",
+      "label": "Product"
+    },
+    {
+      "id": "custom_product_content",
+      "type": "text",
+      "label": "Custom Product Content",
+      "info": "Leave blank to use the product's content.",
+      "default": "Leave blank to use the product's content."
+    },
+    {
+      "id": "badge_text",
+      "type": "text",
+      "label": "Badge Text",
+      "info": "Leave blank to remove a badge."
+    },
+    {
+      "id": "badge_color_scheme",
+      "type": "color_scheme",
+      "label": "Badge Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "id": "cta_text",
+      "type": "text",
+      "label": "Call To Action Text",
+      "default": "Order Now"
+    },
+    {
+      "id": "cta_color_scheme",
+      "type": "color_scheme",
+      "label": "CTA Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "orientation",
+      "label": "Image Position",
+      "options": [
+        {
+          "value": "image-on-left",
+          "label": "Image on Left"
+        },
+        {
+          "value": "image-on-right",
+          "label": "Image on Right"
+        }
+      ],
+      "default": "image-on-left"
+    },
+    {
+      "id": "padding_top",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 24
+    },
+    {
+      "id": "padding_bottom",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 24
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Product Card"
+    }
+  ]
+}
+{%- endschema -%}

@@ -8,15 +8,17 @@
     "logout": "shopify auth logout",
     "list": "shopify theme list -e",
     "log": "shopify theme console -e prod",
+    "dev-log": "shopify theme console -e dev",
     "dev": "vite",
-    "dev-watch": "shopify theme dev -e prod",
+    "dev-watch": "shopify theme dev -e dev",
     "dev-shop": "npm run logout && npm run dev-push && npm run dev-watch",
-    "dev-push": "shopify theme push -d -e prod",
-    "dev-update": "shopify theme push -e prod -d",
+    "dev-push": "shopify theme push -d -e dev",
+    "dev-update": "shopify theme push -e dev -d",
     "theme-push": "npm run build && npm run logout && shopify theme push -e prod -n -x='*.json' -t",
     "theme-pull": "npm run logout && shopify theme pull -e prod -l",
     "theme-pull-json-d": "shopify theme pull -e prod -o='*.json' -d",
-    "build": "vite build"
+    "build": "vite build",
+    "pull-build": "theme-pull-json-d && vite build"
   },
   "devDependencies": {
     "@by-association-only/vite-plugin-shopify-clean": "^2.0.0",

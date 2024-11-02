@@ -1,0 +1,22 @@
+{% comment %}
+  Generates a srcset we can feed in images based on the widths used.
+  Caveats: Don't auto format this file as this might generate new lines bet. the image url
+  and the width
+
+  Accepts:
+  - widths: {String} A comma separated string of image widths to use. Ex: 165,330,535,750,1000,1500,3000
+  - image: {Object} The image to process. Ex product.featured_image
+
+  Note: Ideally this file should be on it's own component. Kinda like "Esentials"?
+{% endcomment %}
+
+{%- if image -%}
+  {%- assign widths_array = '330,535,750,1000,1500' | split: ',' -%}
+  {%- for width_str in widths_array -%}
+    {%- assign width = width_str | plus: 0 -%}
+    {%- if image.width >= width -%}
+      {{ image | image_url: width: width }} {{ width }}w,
+    {%- endif -%}
+  {%- endfor -%}
+  {{ image | image_url: width: image.width }} {{ image.width }}w
+{%- endif -%}

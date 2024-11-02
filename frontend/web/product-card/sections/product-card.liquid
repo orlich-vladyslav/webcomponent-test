@@ -1,22 +1,5 @@
 {%- assign product = section.settings.product -%}
-
-{%- comment -%}
-  Note: vertical padding below merits its own snippet, but the kind that can exist on all components.
-  contemplate this later and behave for now.
-{%- endcomment -%}
-{%- style -%}
-  #shopify-section-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
-
-  @media screen and (min-width: 750px) {
-    #shopify-section-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-{%- endstyle -%}
+{%- render 'generic-section-padding' -%}
 
 {% comment %}
   TODO: Find a way to simplify this, or maybe use a normal badge for it so we can take advantage
@@ -56,7 +39,7 @@
 {% endcomment %}
 {%- assign featured_image_sizes = '(max-width: 599px) 100vw, (min-width: 600px) 50vw' -%}
 {%- capture featured_image_source_set -%}
-  {%- include 'image-source-set', image: product.featured_image, widths: '330,535,750,1000,1500' -%}
+  {%- render 'image-source-set', image: product.featured_image, widths: '330,535,750,1000,1500' -%}
 {%- endcapture -%}
 
 <p>{{ captured_source_set }}</p>

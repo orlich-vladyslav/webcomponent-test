@@ -1,0 +1,20 @@
+{% comment %}
+  Requires the following Settings:
+  - padding_top {range} - Will add a padding to the top of the section
+  - padding_bottom {range} - Will add a padding to the bottom of the section 
+
+  Note: Ideally this file should be on it's own component. Kinda like "Esentials"?
+{% endcomment %}
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}

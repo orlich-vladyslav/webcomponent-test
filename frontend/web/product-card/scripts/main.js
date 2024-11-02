@@ -20,8 +20,6 @@ if (!customElements.get('product-info')) {
          * TODO: Other properties 
 
          * @property string (optional) data-style-orientation - Accepts image-on-left|image-on-right. Defaults to image-on-left which displays the product image to the left
-         * 
-         * @children sourceset - TODO
          */
         class ProductCard extends HTMLElement {
             isBordered = true; // TODO: Make configurable later
@@ -40,9 +38,15 @@ if (!customElements.get('product-info')) {
             badgeBgColor = '#5CC1DE';
             badgeTextColor = '#FFF';
 
+            callToActionProductVariantId = null;
             callToActionText = 'Order Now';
             callToActionTextColor = '#FFF';
             callToActionBgColor = '#6FD830';
+
+            // State
+            isAddingToCart = false;
+            showError = false;
+            onErrorMessage = 'Sorry, we were unable to process your order at this time.';
 
             constructor() {
                 super();
@@ -61,6 +65,8 @@ if (!customElements.get('product-info')) {
                 this.imageSrcSet = this.getAttribute('data-product-image-source-set') || this.imageSrcSet;
                 this.imageSizes = this.getAttribute('data-product-image-sizes') || this.imageSizes;
 
+                this.callToActionProductVariantId = this.getAttribute('data-cta-product-variant-id') || this.callToActionText;
+                this.callToActionProductVariantInStock = this.getAttribute('data-cta-product-variant-in-stock') || this.callToActionProductVariantInStock;
                 this.callToActionText = this.getAttribute('data-cta-text') || this.callToActionText;
                 this.callToActionTextColor = this.getAttribute('data-cta-text-color') || this.callToActionTextColor;
                 this.callToActionBgColor = this.getAttribute('data-cta-bg-color') || this.callToActionBgColor;
@@ -75,10 +81,22 @@ if (!customElements.get('product-info')) {
                 this.orientation = this.getAttribute('data-style-orientation') || this.orientation;
                 this.isBordered = this.getAttribute('data-style-bordered') || this.isBordered;
                 this.productCardTitleTag = this.getAttribute('data-title-tag') || this.isBordered;
+
+                this.onErrorMessage = this.getAttribute('data-on-error-message') || this.onErrorMessage;
             }
 
             connectedCallback() {
                 this.render();
+                this._ctaButton = this.shadowRoot.querySelector('.product-card__cta');
+
+                if (this._ctaButton) {
+                    this._onCTAClickedListener = this._onCTAClicked.bind(this);
+                    this._ctaButton.addEventListener('click', this._onCTAClickedListener);
+                }
+            }
+
+            disconnectedCallback() {
+                this._ctaButton && this._ctaButton.removeEventListener('click', this._onCTAClickedListener);
             }
 
             /**
@@ -87,6 +105,43 @@ if (!customElements.get('product-info')) {
             attributeChangedCallback(name, oldValue, newValue) {
                 super.attributeChangedCallback(name, oldValue, newValue);
                 this.refreshProperties();
+            }
+
+            _onCTAClicked(e) {
+                e.preventDefault();
+                this.isAddingToCart = true;
+                this.render();
+
+                fetch('/cart/add.js', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        id: this.callToActionProductVariantId,
+                        quantity: 1
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            console.error('Error adding item to cart:', response);
+                            this.showError = true;
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Item added to cart:', data);
+                        window.location.href = '/cart';
+                    })
+                    .catch(error => {
+                        console.error('Error adding item to cart:', error);
+                        this.showError = true;
+                    })
+                    .finally(() => {
+                        this.isAddingToCart = false;
+                        this.render();
+                    });
             }
 
             /**
@@ -184,6 +239,8 @@ if (!customElements.get('product-info')) {
                             margin-top: 0.25rem;
                             margin-bottom: 0;
                         }
+
+                        ${this.renderErrorStyling()}
                     </style>
 
                     <article class="product-card">
@@ -192,12 +249,53 @@ if (!customElements.get('product-info')) {
                             <h2 class="product-card__title">${this.title}</h2>
                             ${this.renderPrice()}
                             <p class="product-card__contnet">${this.content}</p>
-                            <button class="product-card__cta">${this.callToActionText}</button>
+                            ${this.renderCTAButton()}
+                            ${this.renderError()}
                         </div>
                         <div class="product-card__block--${blockOrientationModifiers[0]}">
                             ${this.renderImage()}
                         </div>
                     </article>`;
+            }
+
+            renderError() {
+                if (!this.showError) return '';
+                return `<div class="error-message">
+                    <p>${this.onErrorMessage}</p>
+                </div>`
+            }
+
+            renderErrorStyling() {
+                if (!this.showError) return '';
+                // This one can be left hard-coded for now. Let's only do this if it's
+                // actually asked by the client as we're already spamming too much properties
+                return `
+                    .error-message {
+                        background-color: #f8d7da;
+                        color: #721c24;
+                        padding: 20px;
+                        border-radius: 5px;
+                        border: 1px solid #f5c6cb;
+                        max-width: 800px;
+                        margin: 20px auto;
+                        text-align: center;
+                    }
+
+                    .error-message p {
+                        margin: 0 0 10px;
+                    }
+
+                    .error-message a {
+                        color: #0056b3;
+                        text-decoration: underline;
+                        font-weight: bold;
+                    }
+
+                    .error-message a:hover {
+                        text-decoration: none;
+                        color: #004085;
+                    }
+                `;
             }
 
             renderImage() {
@@ -222,6 +320,11 @@ if (!customElements.get('product-info')) {
                     border-radius: 0.5rem;
                     box-sizing: border-box;
                     color: #333333;`;
+            }
+
+            renderCTAButton() {
+                if (this.isAddingToCart) return 'Adding to Cart';
+                return `<button class="product-card__cta">${this.callToActionText}</button>`;
             }
 
             /**

@@ -42,17 +42,18 @@
   {%- render 'image-source-set', image: product.featured_image, widths: '330,535,750,1000,1500' -%}
 {%- endcapture -%}
 
-<p>{{ captured_source_set }}</p>
-
+{% comment %} Ideally data-on-error-message value should be on locales, hard-code for now. {% endcomment %}
 <div class="product-card-container">
   <product-card
     data-product-title="{{ product.title }}"
     data-product-content="{{ section.settings.custom_product_content | default: product.content }}"
-    data-product-price="{{ product.price | money }}"
+    data-product-price="{{ product.selected_or_first_available_variant.price | money }}"
     data-default-product-image="{{ featured_image_url }}"
     data-default-product-image-alt="{{ featured_image_alt }}"
     data-product-image-source-set="{{ featured_image_source_set }}"
     data-product-image-sizes="{{ featured_image_sizes }}"
+    data-cta-product-variant-id="{{ product.selected_or_first_available_variant.id }}"
+    data-cta-product-variant-in-stock="{{ product.selected_or_first_available_variant.available }}"
     data-cta-text="{{ section.settings.cta_text }}"
     data-cta-text-color="{{ cta_text_color }}"
     data-cta-bg-color="{{ cta_bg_color }}"
@@ -85,13 +86,14 @@
       "id": "custom_product_content",
       "type": "text",
       "label": "Custom Product Content",
-      "info": "Leave blank to use the product's content",
-      "default": "Leave blank to use the product's content"
+      "info": "Leave blank to use the product's content.",
+      "default": "Leave blank to use the product's content."
     },
     {
       "id": "badge_text",
       "type": "text",
-      "label": "Badge Text"
+      "label": "Badge Text",
+      "info": "Leave blank to remove a badge."
     },
     {
       "id": "badge_color_scheme",

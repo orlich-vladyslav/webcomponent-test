@@ -1,0 +1,9 @@
+.product-card__wrapper.has-hover:hover {
+  .product-card__image {
+    opacity: 0;
+  }
+
+  .product-card__image--hover {
+    opacity: 100%;
+  }
+}

@@ -1,0 +1,90 @@
+{% if section.settings.product %}
+  {% assign product = all_products[section.settings.product] %}
+  <div class="tw-flex tw-p-20">
+    <product-card
+      data-title="{{ product.title | escape }}"
+      data-price="{{ product.price | money }}"
+      data-product-url="{{ product.url }}"
+      class="
+        product-card__wrapper 
+        {% if product.images.size > 1 %} has-hover {% endif %}
+        "
+    >
+      <picture slot="image">
+        {% if product.featured_image %}
+          <source
+            media="(max-width: 699px)"
+            srcset="
+              {{ product.featured_image | image_url: width: '400x' }} 400w, 
+              {{ product.featured_image | image_url: width: '800x' }} 800w
+            "
+          >
+            
+          <img
+            class="
+              product-card__image 
+              tw-absolute tw-w-full tw-h-full tw-top-0 tw-left-0 tw-object-cover
+              tw-transition-opacity tw-duration-300
+            "
+            src="{{ product.featured_image | image_url: width: '1000x' }}"
+            sizes="(max-width: 999px) 100vw, 1000px"
+            alt="{{ product.title | escape }}"
+            width="{{ product.featured_image.width }}"
+            height="{{ product.featured_image.height }}"
+            loading="lazy"
+          >
+        {% else %}
+          {{ 'product-apparel-1' | placeholder_svg_tag: 'product-card__image product-card__image--placeholder' }}
+        {% endif %}
+      </picture>
+
+      <!-- Hover image slot -->
+      <picture slot="hover-image">
+        {% if product.images.size > 1 %}
+          {% assign hover_image = product.images[1] %}
+          <source
+            media="(max-width: 699px)"
+            srcset="
+              {{ hover_image | image_url: width: '400x' }} 400w, 
+              {{ hover_image | image_url: width: '800x' }} 800w
+            "
+          >
+          <img
+            class="
+              product-card__image 
+              product-card__image--hover 
+              tw-absolute tw-w-full tw-h-full tw-top-0 tw-left-0 tw-object-cover 
+              tw-opacity-0 tw-transition-opacity tw-duration-300"
+            src="{{ hover_image | image_url: width: '1000x' }}"
+            sizes="(max-width: 999px) 100vw, 1000px"
+            alt="{{ product.title | escape }} (hover image)"
+            width="{{ hover_image.width }}"
+            height="{{ hover_image.height }}"
+            loading="lazy"
+          >
+        {% endif %}
+      </picture>
+    </product-card>
+  </div>
+{% else %}
+  <p>Please select a product in the section settings.</p>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Product Card",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Select Product",
+      "info": "Choose a product to display in the card"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Card"
+    }
+  ]
+}
+{% endschema %}
